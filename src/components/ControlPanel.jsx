@@ -30,7 +30,7 @@ function ColorDot({ hex, label, selected, onClick }) {
   )
 }
 
-export default function ControlPanel({ selectedFeature, featureStyles, onApply, onExport }) {
+export default function ControlPanel({ selectedFeature, featureStyles, onApply, onExport, basemap, onBasemap }) {
   const geomType = selectedFeature?.geometry?.type
   const fid = selectedFeature?.id
   const cur = fid != null ? (featureStyles[fid] || {}) : {}
@@ -54,6 +54,21 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
           <ExportButton label="SVG" onClick={() => onExport('svg')} />
         </div>
       </div>
+
+      {/* ── 底圖切換 ─────────────────────────────────────────── */}
+      <Section title="底圖">
+        <div className="flex gap-2">
+          {[{ key: 'light', label: '街道圖' }, { key: 'satellite', label: '衛星圖' }].map(({ key, label }) => (
+            <button key={key} onClick={() => onBasemap(key)}
+              className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all
+                ${basemap === key
+                  ? 'bg-gray-800 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+            >{label}</button>
+          ))}
+        </div>
+      </Section>
 
       <hr className="border-gray-100" />
 

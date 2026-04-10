@@ -285,33 +285,14 @@ export default function MapView() {
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh' }}>
       <div ref={mapContainer} style={{ position: 'absolute', inset: 0 }} />
 
-      {/* ── 底圖切換 ─────────────────────────────────────────── */}
-      {mapReady && (
-        <div style={{
-          position: 'absolute', bottom: 36, left: 10, zIndex: 10,
-          display: 'flex', borderRadius: 8, overflow: 'hidden',
-          boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
-        }}>
-          {[
-            { key: 'light',     label: '街道圖' },
-            { key: 'satellite', label: '衛星圖' },
-          ].map(({ key, label }) => (
-            <button key={key} onClick={() => switchBasemap(key)} style={{
-              padding: '5px 10px', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
-              background: basemap === key ? '#1a1a1a' : '#fff',
-              color:      basemap === key ? '#fff'    : '#333',
-              transition: 'background 0.15s',
-            }}>{label}</button>
-          ))}
-        </div>
-      )}
-
       {mapReady && (
         <ControlPanel
           selectedFeature={selectedFeature}
           featureStyles={featureStyles}
           onApply={applyProp}
           onExport={handleExport}
+          basemap={basemap}
+          onBasemap={switchBasemap}
         />
       )}
     </div>
