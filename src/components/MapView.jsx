@@ -12,7 +12,10 @@ import { DRAW_STYLES } from '../drawStyles'
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'YOUR_MAPBOX_TOKEN_HERE'
 const DEFAULT_CENTER = [121.5654, 25.033]
 const DEFAULT_ZOOM = 13
-const MAP_STYLE = 'mapbox://styles/mapbox/light-v11'
+const MAP_STYLES = {
+  light:     'mapbox://styles/mapbox/light-v11',
+  satellite: 'mapbox://styles/mapbox/satellite-streets-v12',
+}
 
 // ── 自訂樣式圖層（獨立 GeoJSON source，不依賴 draw 內部渲染）────────
 function addStyledLayers(m) {
@@ -84,6 +87,7 @@ export default function MapView() {
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [featureStyles, setFeatureStyles] = useState({})
   const [mapReady, setMapReady] = useState(false)
+  const [basemap, setBasemap] = useState('light')
 
   // ── styled-features source 同步 ───────────────────────────────
   const syncStyledSource = useCallback(() => {
@@ -127,7 +131,7 @@ export default function MapView() {
 
     const m = new mapboxgl.Map({
       container: mapContainer.current,
-      style: MAP_STYLE,
+      style: MAP_STYLES.light,
       center: DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
       preserveDrawingBuffer: true,
@@ -187,6 +191,28 @@ export default function MapView() {
     setFeatureStyles({ ...stylesRef.current })
     syncStyledSource()
   }, [selectedFeature, syncStyledSource])
+
+  // ── 切換底圖 ──────────────────────────────────────────────────
+  const switchBasemap = useCallback((key) => {
+    if (!map.current || !draw.current || key === basemap) return
+
+    // 切換前儲存繪圖內容與樣式
+    const savedFeatures = draw.current.getAll()
+
+    map.current.setStyle(MAP_STYLES[key])
+
+    map.current.once('style.load', () => {
+      // 重新掛載自訂樣式圖層
+      addStyledLayers(map.current)
+      // 還原繪圖內容
+      if (savedFeatures.features.length > 0) {
+        draw.current.add(savedFeatures)
+      }
+      syncStyledSource()
+    })
+
+    setBasemap(key)
+  }, [basemap, syncStyledSource])
 
   // ── 匯出 PNG ──────────────────────────────────────────────────
   const exportPNG = useCallback(() => {
@@ -258,6 +284,28 @@ export default function MapView() {
   return (
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh' }}>
       <div ref={mapContainer} style={{ position: 'absolute', inset: 0 }} />
+
+      {/* ── 底圖切換 ─────────────────────────────────────────── */}
+      {mapReady && (
+        <div style={{
+          position: 'absolute', bottom: 36, left: 10, zIndex: 10,
+          display: 'flex', borderRadius: 8, overflow: 'hidden',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+        }}>
+          {[
+            { key: 'light',     label: '街道圖' },
+            { key: 'satellite', label: '衛星圖' },
+          ].map(({ key, label }) => (
+            <button key={key} onClick={() => switchBasemap(key)} style={{
+              padding: '5px 10px', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
+              background: basemap === key ? '#1a1a1a' : '#fff',
+              color:      basemap === key ? '#fff'    : '#333',
+              transition: 'background 0.15s',
+            }}>{label}</button>
+          ))}
+        </div>
+      )}
+
       {mapReady && (
         <ControlPanel
           selectedFeature={selectedFeature}
