@@ -49,7 +49,8 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
       {/* ── Header（固定不捲動）──────────────────────── */}
       <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-3 shrink-0">
         <h2 className="text-sm font-bold text-gray-700">圖面控制</h2>
-        <div className="flex gap-1.5">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-gray-400 font-medium">匯出 ↑</span>
           <ExportButton label="PNG" onClick={() => onExport('png')} />
           <ExportButton label="SVG" onClick={() => onExport('svg')} />
         </div>
