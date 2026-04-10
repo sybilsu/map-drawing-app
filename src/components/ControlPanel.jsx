@@ -30,7 +30,7 @@ function ColorDot({ hex, label, selected, onClick }) {
   )
 }
 
-export default function ControlPanel({ selectedFeature, featureStyles, onApply, onExport, basemap, onBasemap }) {
+export default function ControlPanel({ selectedFeature, featureStyles, onApply, onExport, basemap, onBasemap, drawMode, onFinishDraw, onCancelDraw }) {
   const geomType = selectedFeature?.geometry?.type
   const fid = selectedFeature?.id
   const cur = fid != null ? (featureStyles[fid] || {}) : {}
@@ -54,6 +54,22 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
           <ExportButton label="SVG" onClick={() => onExport('svg')} />
         </div>
       </div>
+
+      {/* ── 繪製中：完成 / 取消 ──────────────────────────────── */}
+      {(drawMode === 'draw_line_string' || drawMode === 'draw_polygon') && (
+        <div className="flex gap-2">
+          <button onPointerDown={(e) => { e.stopPropagation(); onFinishDraw() }}
+            className="flex-1 py-2.5 rounded-xl bg-gray-800 text-white text-sm font-bold active:scale-95 transition-all"
+            style={{ touchAction: 'manipulation' }}>
+            完成繪製
+          </button>
+          <button onPointerDown={(e) => { e.stopPropagation(); onCancelDraw() }}
+            className="py-2.5 px-4 rounded-xl border border-gray-200 text-gray-500 text-sm font-semibold active:scale-95 transition-all"
+            style={{ touchAction: 'manipulation' }}>
+            取消
+          </button>
+        </div>
+      )}
 
       {/* ── 底圖切換 ─────────────────────────────────────────── */}
       <Section title="底圖">
