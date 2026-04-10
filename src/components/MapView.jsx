@@ -167,8 +167,20 @@ export default function MapView() {
       })
       m.on('draw.modechange', (e) => {
         setDrawMode(e.mode)
+        // 切回 simple_select 時主動抓取當前選取（修正手機上 selectionchange 未觸發）
+        if (e.mode === 'simple_select') {
+          const sel = draw.current?.getSelectedIds() ?? []
+          if (sel.length > 0) {
+            const f = draw.current.get(sel[0])
+            if (f) setSelectedFeature(f)
+          }
+        }
       })
-      m.on('draw.create', syncStyledSource)
+      m.on('draw.create', (e) => {
+        syncStyledSource()
+        // 畫完後自動選取，讓換色面板立即顯示
+        if (e.features.length > 0) setSelectedFeature(e.features[0])
+      })
       m.on('draw.update', syncStyledSource)
       m.on('draw.delete', (e) => {
         e.features.forEach(f => delete stylesRef.current[f.id])
@@ -298,7 +310,16 @@ export default function MapView() {
           basemap={basemap}
           onBasemap={switchBasemap}
           drawMode={drawMode}
-          onFinishDraw={() => draw.current?.changeMode('simple_select')}
+          onFinishDraw={() => {
+            draw.current?.changeMode('simple_select')
+            setTimeout(() => {
+              const sel = draw.current?.getSelectedIds() ?? []
+              if (sel.length > 0) {
+                const f = draw.current.get(sel[0])
+                if (f) setSelectedFeature(f)
+              }
+            }, 50)
+          }}
           onCancelDraw={() => { draw.current?.trash(); draw.current?.changeMode('simple_select') }}
         />
       )}
