@@ -7,6 +7,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import ControlPanel from './ControlPanel'
 import { MARKER_COLORS, OUTLINE_COLORS, computeFillStyle } from '../styles'
+import { DRAW_STYLES } from '../drawStyles'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'YOUR_MAPBOX_TOKEN_HERE'
 const DEFAULT_CENTER = [121.5654, 25.033]
@@ -137,6 +138,7 @@ export default function MapView() {
       const d = new MapboxDraw({
         displayControlsDefault: false,
         controls: { polygon: true, line_string: true, point: true, trash: true },
+        styles: DRAW_STYLES,
       })
       draw.current = d
       m.addControl(d, 'top-left')
