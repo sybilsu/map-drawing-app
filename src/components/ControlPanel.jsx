@@ -159,8 +159,9 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
           </div>
         )}
 
-        <div className="pt-1 border-t border-gray-100">
+        <div className="pt-1 border-t border-gray-100 space-y-0.5">
           <p className="text-[10px] text-gray-300 text-center">左上角工具列：繪製 / 刪除圖形</p>
+          <p className="text-[10px] text-gray-300 text-center leading-snug">手機介面：每圖樣完成，點擊「完成繪製」，才會出現顏色選項</p>
         </div>
       </div>
     </div>

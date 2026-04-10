@@ -313,12 +313,15 @@ export default function MapView() {
           onFinishDraw={() => {
             draw.current?.changeMode('simple_select')
             setTimeout(() => {
+              // 先試 selection，再 fallback 到最後一個 feature
               const sel = draw.current?.getSelectedIds() ?? []
               if (sel.length > 0) {
                 const f = draw.current.get(sel[0])
-                if (f) setSelectedFeature(f)
+                if (f) { setSelectedFeature(f); return }
               }
-            }, 50)
+              const all = draw.current?.getAll()?.features ?? []
+              if (all.length > 0) setSelectedFeature(all[all.length - 1])
+            }, 100)
           }}
           onCancelDraw={() => { draw.current?.trash(); draw.current?.changeMode('simple_select') }}
         />
