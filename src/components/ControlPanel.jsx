@@ -75,24 +75,8 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
           </div>
         )}
 
-        {/* ── 底圖切換 ─────────────────────────────── */}
-        <Section title="底圖">
-          <div className="flex gap-2">
-            {[{ key: 'light', label: '街道圖' }, { key: 'satellite', label: '衛星圖' }].map(({ key, label }) => (
-              <button key={key} onClick={() => onBasemap(key)}
-                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all
-                  ${basemap === key
-                    ? 'bg-gray-800 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-              >{label}</button>
-            ))}
-          </div>
-        </Section>
-
-        <hr className="border-gray-100" />
-
-        {selectedFeature ? (
+        {/* ── 已選取圖形：換色選項（優先顯示在最上方）── */}
+        {selectedFeature && (
           <div className="space-y-3">
             <p className="text-xs text-gray-400">
               已選取：<span className="font-semibold text-gray-600">
@@ -152,12 +136,31 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
               </Section>
             )}
           </div>
-        ) : (
-          <div className="text-center py-3 space-y-1">
+        )}
+
+        {!selectedFeature && (
+          <div className="text-center py-2 space-y-1">
             <p className="text-xs text-gray-400">在地圖上繪製或選取圖形</p>
             <p className="text-xs text-gray-300">多邊形 · 線條 · 點</p>
           </div>
         )}
+
+        <hr className="border-gray-100" />
+
+        {/* ── 底圖切換 ─────────────────────────────── */}
+        <Section title="底圖">
+          <div className="flex gap-2">
+            {[{ key: 'light', label: '街道圖' }, { key: 'satellite', label: '衛星圖' }].map(({ key, label }) => (
+              <button key={key} onClick={() => onBasemap(key)}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all
+                  ${basemap === key
+                    ? 'bg-gray-800 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+              >{label}</button>
+            ))}
+          </div>
+        </Section>
 
         <div className="pt-1 border-t border-gray-100 space-y-0.5">
           <p className="text-[10px] text-gray-300 text-center">左上角工具列：繪製 / 刪除圖形</p>
