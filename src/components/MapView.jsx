@@ -301,14 +301,32 @@ export default function MapView() {
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh' }}>
       <div ref={mapContainer} style={{ position: 'absolute', inset: 0 }} />
 
+      {/* ── 底圖切換（縮放按鈕下方）────────────────────────────── */}
+      {mapReady && (
+        <div style={{
+          position: 'absolute', top: 108, right: 10, zIndex: 10,
+          display: 'flex', flexDirection: 'column',
+          borderRadius: 4, overflow: 'hidden',
+          boxShadow: '0 0 0 2px rgba(0,0,0,0.1)',
+        }}>
+          {[{ key: 'light', label: '街道' }, { key: 'satellite', label: '衛星' }].map(({ key, label }) => (
+            <button key={key} onClick={() => switchBasemap(key)} style={{
+              padding: '6px 8px', fontSize: 11, fontWeight: 600,
+              border: 'none', borderBottom: '1px solid #e5e7eb',
+              cursor: 'pointer', lineHeight: 1, touchAction: 'manipulation',
+              background: basemap === key ? '#1a1a1a' : '#fff',
+              color:      basemap === key ? '#fff'    : '#333',
+            }}>{label}</button>
+          ))}
+        </div>
+      )}
+
       {mapReady && (
         <ControlPanel
           selectedFeature={selectedFeature}
           featureStyles={featureStyles}
           onApply={applyProp}
           onExport={handleExport}
-          basemap={basemap}
-          onBasemap={switchBasemap}
           drawMode={drawMode}
           onFinishDraw={() => {
             draw.current?.changeMode('simple_select')
