@@ -38,13 +38,13 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
 
   return (
     <div className="
-      absolute bottom-6 left-1/2 -translate-x-1/2
+      absolute bottom-20 left-1/2 -translate-x-1/2
       md:left-auto md:right-6 md:bottom-6 md:translate-x-0
       w-[calc(100vw-2rem)] max-w-xs
       bg-white/92 backdrop-blur-md
       rounded-2xl shadow-xl border border-gray-200
       z-10 flex flex-col
-      max-h-[70vh]
+      max-h-[60vh] md:max-h-[80vh]
     ">
       {/* ── Header（固定不捲動）──────────────────────── */}
       <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-3 shrink-0">
