@@ -59,9 +59,9 @@ export default function ControlPanel({ selectedFeature, featureStyles, onApply, 
       {/* ── 可捲動內容區 ─────────────────────────────── */}
       <div className="overflow-y-auto px-4 pb-4 space-y-3">
 
-        {/* ── 繪製中：完成 / 取消 ──────────────────── */}
+        {/* ── 繪製中：完成 / 取消（僅觸控裝置）───── */}
         {(drawMode === 'draw_line_string' || drawMode === 'draw_polygon') && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 md:hidden">
             <button onPointerDown={(e) => { e.stopPropagation(); onFinishDraw() }}
               className="flex-1 py-2.5 rounded-xl bg-gray-800 text-white text-sm font-bold active:scale-95 transition-all"
               style={{ touchAction: 'manipulation' }}>
