@@ -304,7 +304,7 @@ export default function MapView() {
       {/* ── 底圖切換（縮放按鈕下方）────────────────────────────── */}
       {mapReady && (
         <div style={{
-          position: 'absolute', top: 108, right: 10, zIndex: 10,
+          position: 'absolute', top: 155, right: 10, zIndex: 10,
           display: 'flex', flexDirection: 'column',
           borderRadius: 4, overflow: 'hidden',
           boxShadow: '0 0 0 2px rgba(0,0,0,0.1)',
