@@ -88,6 +88,7 @@ export default function MapView() {
   const [featureStyles, setFeatureStyles] = useState({})
   const [mapReady, setMapReady] = useState(false)
   const [basemap, setBasemap] = useState('light')
+  const [drawMode, setDrawMode] = useState('simple_select')
 
   // ── styled-features source 同步 ───────────────────────────────
   const syncStyledSource = useCallback(() => {
@@ -163,6 +164,9 @@ export default function MapView() {
 
       m.on('draw.selectionchange', (e) => {
         setSelectedFeature(e.features.length > 0 ? e.features[0] : null)
+      })
+      m.on('draw.modechange', (e) => {
+        setDrawMode(e.mode)
       })
       m.on('draw.create', syncStyledSource)
       m.on('draw.update', syncStyledSource)
@@ -284,6 +288,36 @@ export default function MapView() {
   return (
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh' }}>
       <div ref={mapContainer} style={{ position: 'absolute', inset: 0 }} />
+
+      {/* ── 觸控「完成繪製」按鈕 ─────────────────────────────── */}
+      {mapReady && (drawMode === 'draw_line_string' || drawMode === 'draw_polygon') && (
+        <div style={{
+          position: 'absolute',
+          bottom: 120, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 20, display: 'flex', gap: 10,
+        }}>
+          <button
+            onPointerDown={(e) => { e.stopPropagation(); draw.current?.changeMode('simple_select') }}
+            style={{
+              padding: '12px 28px', fontSize: 16, fontWeight: 700,
+              background: '#1a1a1a', color: '#fff',
+              border: 'none', borderRadius: 50,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
+              cursor: 'pointer', touchAction: 'manipulation',
+            }}
+          >完成繪製</button>
+          <button
+            onPointerDown={(e) => { e.stopPropagation(); draw.current?.trash(); draw.current?.changeMode('simple_select') }}
+            style={{
+              padding: '12px 20px', fontSize: 16, fontWeight: 700,
+              background: '#fff', color: '#555',
+              border: '1.5px solid #ddd', borderRadius: 50,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+              cursor: 'pointer', touchAction: 'manipulation',
+            }}
+          >取消</button>
+        </div>
+      )}
 
       {mapReady && (
         <ControlPanel
