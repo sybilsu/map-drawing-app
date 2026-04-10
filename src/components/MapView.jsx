@@ -10,6 +10,9 @@ import { MARKER_COLORS, OUTLINE_COLORS, computeFillStyle } from '../styles'
 import { DRAW_STYLES } from '../drawStyles'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'YOUR_MAPBOX_TOKEN_HERE'
+const isTouchDevice = typeof window !== 'undefined'
+  && navigator.maxTouchPoints > 0
+  && window.matchMedia('(hover: none)').matches
 const DEFAULT_CENTER = [121.5654, 25.033]
 const DEFAULT_ZOOM = 13
 const MAP_STYLES = {
@@ -300,6 +303,18 @@ export default function MapView() {
   return (
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh' }}>
       <div ref={mapContainer} style={{ position: 'absolute', inset: 0 }} />
+
+      {/* ── 桌機繪製提示 ─────────────────────────────────────── */}
+      {mapReady && !isTouchDevice && (drawMode === 'draw_line_string' || drawMode === 'draw_polygon') && (
+        <div style={{
+          position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 20, background: 'rgba(0,0,0,0.65)', color: '#fff',
+          padding: '6px 16px', borderRadius: 20, fontSize: 13, fontWeight: 500,
+          pointerEvents: 'none', whiteSpace: 'nowrap',
+        }}>
+          {drawMode === 'draw_line_string' ? '點擊新增節點，雙擊結束線條' : '點擊新增頂點，雙擊關閉多邊形'}
+        </div>
+      )}
 
       {/* ── 底圖切換（縮放按鈕下方）────────────────────────────── */}
       {mapReady && (
