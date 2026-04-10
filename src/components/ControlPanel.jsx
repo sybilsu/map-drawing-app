@@ -30,7 +30,9 @@ function ColorDot({ hex, label, selected, onClick }) {
   )
 }
 
-const isTouchDevice = typeof window !== 'undefined' && navigator.maxTouchPoints > 0
+const isTouchDevice = typeof window !== 'undefined'
+  && navigator.maxTouchPoints > 0
+  && window.matchMedia('(hover: none)').matches
 
 export default function ControlPanel({ selectedFeature, featureStyles, onApply, onExport, drawMode, onFinishDraw, onCancelDraw }) {
   const geomType = selectedFeature?.geometry?.type
